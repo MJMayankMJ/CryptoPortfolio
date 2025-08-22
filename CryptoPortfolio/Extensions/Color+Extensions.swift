@@ -8,6 +8,19 @@
 import SwiftUI
 
 extension Color {
+    static let cryptoBackground = Color(hex: "0A0E27")
+    static let cryptoDarkBlue = Color(hex: "0F1630")
+    static let cryptoCardBackground = Color(hex: "161B2E")
+    static let cryptoBlue = Color(hex: "5B7FFF")
+    static let cryptoLightBlue = Color(hex: "6B8AFF")
+    static let cryptoPurple = Color(hex: "7B61FF")
+    static let cryptoGreen = Color(hex: "00D4AA")
+    static let cryptoRed = Color(hex: "FF6B6B")
+    static let cryptoGray = Color(hex: "8B92B0")
+    static let cryptoLightGray = Color(hex: "A0A7C1")
+    static let cryptoYellow = Color(hex: "FFD700")
+    static let cryptoOrange = Color(hex: "FF9500")
+    
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0

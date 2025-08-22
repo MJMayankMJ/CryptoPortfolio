@@ -7,11 +7,7 @@
 import SwiftUI
 import Combine
 
-struct Token {
-    let symbol: String
-    let name: String
-    let icon: String
-}
+
 
 class ExchangeViewModel: ObservableObject {
     @Published var sendToken = Token(symbol: "ETH", name: "Ethereum", icon: "e.circle.fill")

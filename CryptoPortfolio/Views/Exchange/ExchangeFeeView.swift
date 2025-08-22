@@ -40,21 +40,16 @@ struct ExchangeFeeView: View {
     }
 }
 
-struct FeeRow: View {
-    let title: String
-    let value: String
-    
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.system(size: 14))
-                .foregroundColor(.gray)
-            
-            Spacer()
-            
-            Text(value)
-                .font(.system(size: 14))
-                .foregroundColor(.white)
-        }
+
+struct ExchangeFeeView_Previews: PreviewProvider {
+    static var previews: some View {
+        ExchangeFeeView(
+            rate: 178138.80,
+            spread: 0.5,
+            gasFee: 422.73,
+            youWillReceive: 177025.42
+        )
+        .padding()
+        .background(Color.black)
     }
 }

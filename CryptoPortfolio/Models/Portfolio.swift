@@ -8,7 +8,7 @@
 import Foundation
 
 struct Portfolio {
-    let totalValueINR: Double = 1_57_342.05
+    let totalValueINR: Double = 157342.05
     let totalValueBTC: Double = 0.015
     let change24h: Double = 9.6
     let changeAmount: Double = 1342
@@ -42,4 +42,10 @@ struct Transaction: Identifiable {
             }
         }
     }
+}
+
+struct Token {
+    let symbol: String
+    let name: String
+    let icon: String
 }

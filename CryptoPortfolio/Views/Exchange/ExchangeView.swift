@@ -15,24 +15,20 @@ struct ExchangeView: View {
     var body: some View {
         ZStack {
             // Background
-            LinearGradient(
-                colors: [
-                    Color(hex: "1a1a2e"),
-                    Color(hex: "0f0f1e")
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            Color.cryptoBackground
+                .ignoresSafeArea()
             
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
                 // Header
-                Text("Exchange")
-                    .font(.system(size: 24, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal)
-                    .padding(.top, 60)
+                HStack {
+                    Text("Exchange")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.white)
+                    
+                    Spacer()
+                }
+                .padding(.horizontal)
+                .padding(.top, 60)
                 
                 // Exchange Card
                 VStack(spacing: 0) {
@@ -41,7 +37,8 @@ struct ExchangeView: View {
                         title: "Send",
                         token: viewModel.sendToken,
                         amount: $sendAmount,
-                        balance: viewModel.ethBalance
+                        balance: viewModel.ethBalance,
+                        isINR: false
                     )
                     
                     // Swap Button
@@ -50,14 +47,17 @@ struct ExchangeView: View {
                             viewModel.swapTokens()
                         }
                     }) {
-                        Image(systemName: "arrow.up.arrow.down")
-                            .font(.system(size: 20))
-                            .foregroundColor(.white)
-                            .frame(width: 44, height: 44)
-                            .background(Color.blue)
-                            .clipShape(Circle())
+                        ZStack {
+                            Circle()
+                                .fill(Color.cryptoBlue)
+                                .frame(width: 48, height: 48)
+                            
+                            Image(systemName: "arrow.up.arrow.down")
+                                .font(.system(size: 20, weight: .medium))
+                                .foregroundColor(.white)
+                        }
                     }
-                    .padding(.vertical, -22)
+                    .padding(.vertical, -24)
                     .zIndex(1)
                     
                     // Receive Section
@@ -66,20 +66,49 @@ struct ExchangeView: View {
                         token: viewModel.receiveToken,
                         amount: $receiveAmount,
                         balance: viewModel.inrBalance,
-                        isReceive: true
+                        isReceive: true,
+                        isINR: true
                     )
                 }
-                .background(Color.black.opacity(0.3))
+                .background(Color.cryptoCardBackground)
                 .cornerRadius(20)
                 .padding(.horizontal)
                 
                 // Fee Details
-                ExchangeFeeView(
-                    rate: viewModel.exchangeRate,
-                    spread: viewModel.spread,
-                    gasFee: viewModel.gasFee,
-                    youWillReceive: viewModel.calculateReceiveAmount(from: sendAmount)
-                )
+                VStack(spacing: 16) {
+                    FeeRow(
+                        title: "Rate",
+                        value: "1 ETH = ₹178138.80"
+                    )
+                    
+                    FeeRow(
+                        title: "Spread",
+                        value: "0.5%"
+                    )
+                    
+                    FeeRow(
+                        title: "Gas fee",
+                        value: "₹422.73"
+                    )
+                    
+                    Divider()
+                        .background(Color.cryptoGray.opacity(0.3))
+                    
+                    HStack {
+                        Text("You will receive")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(Color.cryptoGray)
+                        
+                        Spacer()
+                        
+                        Text("₹0.00")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+                .padding(20)
+                .background(Color.cryptoCardBackground)
+                .cornerRadius(16)
                 .padding(.horizontal)
                 
                 // Exchange Button
@@ -90,9 +119,9 @@ struct ExchangeView: View {
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                        .padding(.vertical, 18)
+                        .background(Color.cryptoBlue)
+                        .cornerRadius(16)
                 }
                 .padding(.horizontal)
                 
@@ -108,56 +137,103 @@ struct TokenInputSection: View {
     let amount: Binding<String>
     let balance: Double
     var isReceive: Bool = false
+    var isINR: Bool = false
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             Text(title)
                 .font(.system(size: 14))
-                .foregroundColor(.gray)
+                .foregroundColor(Color.cryptoGray)
             
-            HStack {
+            HStack(spacing: 12) {
                 // Token Selector
                 HStack(spacing: 8) {
-                    Image(systemName: token.icon)
-                        .font(.system(size: 24))
-                        .foregroundColor(.white)
+                    if isINR {
+                        Text("₹")
+                            .font(.system(size: 24, weight: .medium))
+                            .foregroundColor(.white)
+                    } else {
+                        ZStack {
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 32, height: 32)
+                            
+                            Text("E")
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundColor(Color.cryptoBackground)
+                        }
+                    }
                     
                     Text(token.symbol)
-                        .font(.system(size: 16, weight: .medium))
+                        .font(.system(size: 18, weight: .medium))
                         .foregroundColor(.white)
                     
                     Image(systemName: "chevron.down")
-                        .font(.system(size: 12))
-                        .foregroundColor(.gray)
+                        .font(.system(size: 14))
+                        .foregroundColor(Color.cryptoGray)
                 }
                 
                 Spacer()
                 
                 // Amount Input
                 TextField("0", text: amount)
-                    .font(.system(size: 24, weight: .semibold))
+                    .font(.system(size: 28, weight: .semibold))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.trailing)
                     .keyboardType(.decimalPad)
                     .disabled(isReceive)
+                    .placeholder(when: amount.wrappedValue.isEmpty) {
+                        Text("0")
+                            .foregroundColor(Color.cryptoGray)
+                            .font(.system(size: 28, weight: .semibold))
+                    }
             }
             
             HStack {
                 Text("Balance")
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
+                    .font(.system(size: 13))
+                    .foregroundColor(Color.cryptoGray.opacity(0.7))
                 
-                Text(String(format: "%.6f", balance))
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
+                Text(isINR ? String(format: "%.2f", balance) : String(format: "%.6f", balance))
+                    .font(.system(size: 13))
+                    .foregroundColor(Color.cryptoGray.opacity(0.7))
                 
                 Spacer()
             }
         }
-        .padding()
-        .background(
-            isReceive ? Color.blue.opacity(0.1) : Color.clear
-        )
-        .cornerRadius(12)
+        .padding(20)
+    }
+}
+
+struct FeeRow: View {
+    let title: String
+    let value: String
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 14))
+                .foregroundColor(Color.cryptoGray)
+            
+            Spacer()
+            
+            Text(value)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(.white)
+        }
+    }
+}
+
+// Extension for placeholder modifier
+extension View {
+    func placeholder<Content: View>(
+        when shouldShow: Bool,
+        alignment: Alignment = .trailing,
+        @ViewBuilder placeholder: () -> Content) -> some View {
+        
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
+        }
     }
 }

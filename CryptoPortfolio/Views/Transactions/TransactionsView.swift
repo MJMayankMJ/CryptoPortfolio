@@ -13,43 +13,54 @@ struct TransactionsView: View {
     var body: some View {
         ZStack {
             // Background
-            LinearGradient(
-                colors: [
-                    Color(hex: "1a1a2e"),
-                    Color(hex: "0f0f1e")
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            Color.cryptoBackground
+                .ignoresSafeArea()
             
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
                 // Portfolio Card
                 PortfolioCardView()
                     .padding(.horizontal)
                     .padding(.top, 60)
                 
                 // Action Buttons
-                HStack(spacing: 12) {
-                    ActionButton(icon: "arrow.down", title: "Receive")
-                    ActionButton(icon: "arrow.up", title: "Send")
-                    ActionButton(icon: "plus", title: "", isAdd: true)
+                HStack(spacing: 16) {
+                    ActionButton(
+                        icon: "arrow.down",
+                        title: "Receive",
+                        action: {}
+                    )
+                    
+                    ActionButton(
+                        icon: "arrow.up",
+                        title: "Send",
+                        action: {}
+                    )
+                    
+                    // Plus button
+                    Button(action: {}) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 24, weight: .medium))
+                            .foregroundColor(.white)
+                            .frame(width: 56, height: 56)
+                            .background(Color.cryptoBlue)
+                            .clipShape(Circle())
+                    }
                 }
                 .padding(.horizontal)
                 
                 // Transaction List
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text("Transactions")
-                        .font(.system(size: 14))
-                        .foregroundColor(.gray)
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(Color.cryptoGray)
                         .padding(.horizontal)
                     
                     Text("Last 4 days")
-                        .font(.system(size: 12))
-                        .foregroundColor(.gray.opacity(0.7))
+                        .font(.system(size: 13))
+                        .foregroundColor(Color.cryptoGray.opacity(0.6))
                         .padding(.horizontal)
                     
-                    ScrollView {
+                    ScrollView(showsIndicators: false) {
                         VStack(spacing: 0) {
                             ForEach(mockTransactions()) { transaction in
                                 TransactionRowView(transaction: transaction)
@@ -74,84 +85,83 @@ struct TransactionsView: View {
 
 struct PortfolioCardView: View {
     var body: some View {
-        VStack(spacing: 12) {
-            Text("INR")
-                .font(.system(size: 14))
-                .foregroundColor(.white.opacity(0.7))
-            
-            Text("1,57,342.05")
-                .font(.system(size: 42, weight: .bold))
-                .foregroundColor(.white)
-            
-            HStack(spacing: 8) {
-                Text("₹1,342")
-                    .foregroundColor(.green)
-                Text("+9.6%")
-                    .foregroundColor(.green)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(Color.green.opacity(0.2))
-                    .cornerRadius(4)
-            }
-            .font(.system(size: 14))
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 32)
-        .background(
+        ZStack {
+            // Gradient background
             LinearGradient(
-                colors: [Color.blue.opacity(0.6), Color.purple.opacity(0.4)],
+                colors: [
+                    Color.cryptoBlue.opacity(0.8),
+                    Color.cryptoPurple.opacity(0.6)
+                ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
-        )
-        .cornerRadius(20)
-        .overlay(
-            HStack {
-                Spacer()
-                Image(systemName: "flame.fill")
-                    .font(.system(size: 14))
-                    .foregroundColor(.yellow)
-                    .padding(8)
-                    .background(Color.yellow.opacity(0.3))
-                    .cornerRadius(8)
-                    .overlay(
+            
+            VStack(spacing: 16) {
+                // Top section with INR and flash badge
+                HStack {
+                    Text("INR")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.white.opacity(0.9))
+                    
+                    Spacer()
+                    
+                    // Flash badge
+                    HStack(spacing: 8) {
                         Text("flash1729")
-                            .font(.system(size: 10))
-                            .foregroundColor(.yellow)
-                            .offset(x: -60)
-                    )
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(Color.cryptoYellow)
+                        
+                        Image(systemName: "flame.fill")
+                            .font(.system(size: 14))
+                            .foregroundColor(Color.cryptoYellow)
+                            .padding(6)
+                            .background(Color.cryptoYellow.opacity(0.2))
+                            .cornerRadius(6)
+                    }
+                }
+                
+                // Value
+                Text("1,57,342.05")
+                    .font(.system(size: 44, weight: .bold))
+                    .foregroundColor(.white)
+                
+                // Change indicators
+                HStack(spacing: 12) {
+                    Text("₹1,342")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color.cryptoGreen)
+                    
+                    Text("+9.6%")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color.cryptoGreen)
+                }
             }
-            .padding()
-            , alignment: .topTrailing
-        )
+            .padding(24)
+        }
+        .cornerRadius(20)
     }
 }
 
 struct ActionButton: View {
     let icon: String
     let title: String
-    var isAdd: Bool = false
+    let action: () -> Void
     
     var body: some View {
-        Button(action: {}) {
-            if isAdd {
+        Button(action: action) {
+            VStack(spacing: 8) {
                 Image(systemName: icon)
                     .font(.system(size: 20))
                     .foregroundColor(.white)
-                    .frame(width: 44, height: 44)
-                    .background(Color.blue)
-                    .clipShape(Circle())
-            } else {
-                VStack(spacing: 4) {
-                    Image(systemName: icon)
-                        .font(.system(size: 20))
-                    Text(title)
-                        .font(.system(size: 12))
-                }
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: 44)
+                
+                Text(title)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.white)
             }
+            .frame(maxWidth: .infinity)
+            .frame(height: 70)
+            .background(Color.cryptoCardBackground)
+            .cornerRadius(16)
         }
     }
 }
@@ -160,43 +170,52 @@ struct TransactionRowView: View {
     let transaction: Transaction
     
     var body: some View {
-        HStack {
+        HStack(spacing: 16) {
+            // Icon
             Image(systemName: transaction.type == .receive ? "arrow.down" : "arrow.up")
-                .font(.system(size: 16))
+                .font(.system(size: 18))
                 .foregroundColor(.white)
-                .frame(width: 32, height: 32)
-                .background(Color.gray.opacity(0.2))
+                .frame(width: 40, height: 40)
+                .background(Color.cryptoCardBackground)
                 .clipShape(Circle())
             
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 4) {
                 Text(transaction.type.title)
-                    .font(.system(size: 14))
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundColor(.white)
                 
-                Text(dateFormatter.string(from: transaction.date))
-                    .font(.system(size: 12))
-                    .foregroundColor(.gray)
+                Text(formatDate(transaction.date))
+                    .font(.system(size: 13))
+                    .foregroundColor(Color.cryptoGray)
             }
             
             Spacer()
             
-            VStack(alignment: .trailing, spacing: 2) {
+            VStack(alignment: .trailing, spacing: 4) {
                 Text(transaction.symbol)
-                    .font(.system(size: 14))
+                    .font(.system(size: 15, weight: .medium))
                     .foregroundColor(.white)
                 
                 Text("+\(String(format: "%.6f", transaction.amount))")
-                    .font(.system(size: 12))
-                    .foregroundColor(.green)
+                    .font(.system(size: 13))
+                    .foregroundColor(Color.cryptoGreen)
             }
         }
-        .padding()
-        .background(Color.white.opacity(0.03))
+        .padding(.horizontal)
+        .padding(.vertical, 12)
+        .background(Color.cryptoBackground)
     }
     
-    var dateFormatter: DateFormatter {
+    func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM"
-        return formatter
+        return formatter.string(from: date)
     }
 }
+
+struct TransactionsView_Previews: PreviewProvider {
+    static var previews: some View {
+        TransactionsView()
+    }
+}
+

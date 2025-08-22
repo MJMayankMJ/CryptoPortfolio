@@ -21,19 +21,32 @@ struct TimeRangeSelector: View {
                 }) {
                     Text(range)
                         .font(.system(size: 14, weight: selected == range ? .semibold : .regular))
-                        .foregroundColor(selected == range ? .white : .gray)
+                        .foregroundColor(selected == range ? .white : Color.cryptoGray)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 10)
                         .background(
-                            selected == range ? Color.blue.opacity(0.3) : Color.clear
+                            selected == range ?
+                            Color.cryptoBlue : Color.clear
                         )
                         .cornerRadius(8)
                 }
             }
         }
-        .padding(4)
-        .background(Color.white.opacity(0.05))
+        .padding(3)
+        .background(Color.cryptoCardBackground)
         .cornerRadius(12)
-        .padding(.horizontal)
+    }
+}
+
+struct TimeRangeSelector_Previews: PreviewProvider {
+    static var previews: some View {
+        // Create a state variable to hold the selected range
+        @State var selectedRange = "1d"
+        
+        return ZStack {
+            Color.cryptoBackground.ignoresSafeArea()
+            TimeRangeSelector(selected: $selectedRange)
+                .padding()
+        }
     }
 }

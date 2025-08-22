@@ -12,11 +12,11 @@ struct PortfolioHeaderView: View {
     @State private var showingINR = true
     
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 12) {
             HStack {
                 Text("Portfolio Value")
-                    .font(.system(size: 14))
-                    .foregroundColor(.gray)
+                    .font(.system(size: 15, weight: .regular))
+                    .foregroundColor(Color.cryptoGray)
                 
                 Button(action: {
                     withAnimation {
@@ -24,59 +24,54 @@ struct PortfolioHeaderView: View {
                     }
                 }) {
                     Image(systemName: "arrow.left.arrow.right")
-                        .font(.system(size: 12))
-                        .foregroundColor(.gray)
+                        .font(.system(size: 14))
+                        .foregroundColor(Color.cryptoGray)
                 }
                 
                 Spacer()
                 
                 Button(action: {}) {
                     Image(systemName: "square.and.arrow.up")
-                        .foregroundColor(.gray)
+                        .font(.system(size: 18))
+                        .foregroundColor(Color.cryptoGray)
                 }
                 
                 Button(action: {}) {
                     Image(systemName: "doc.on.doc")
-                        .foregroundColor(.gray)
+                        .font(.system(size: 18))
+                        .foregroundColor(Color.cryptoGray)
                 }
             }
             .padding(.horizontal)
             
-            HStack(alignment: .bottom, spacing: 8) {
-                if showingINR {
-                    Text("₹")
-                        .font(.system(size: 28, weight: .medium))
-                        .foregroundColor(.white)
-                    
-                    Text(String(format: "%.2f", portfolio.totalValueINR))
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(.white)
-                } else {
-                    Text(String(format: "%.3f", portfolio.totalValueBTC))
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(.white)
-                    
-                    Text("BTC")
-                        .font(.system(size: 24, weight: .medium))
-                        .foregroundColor(.white)
-                        .padding(.bottom, 4)
-                }
-            }
-            
-            HStack(spacing: 8) {
-                Text("₹\(Int(portfolio.changeAmount))")
-                    .font(.system(size: 14))
-                    .foregroundColor(.green)
+            HStack(alignment: .bottom, spacing: 4) {
+                Text("₹")
+                    .font(.system(size: 32, weight: .medium))
+                    .foregroundColor(.white)
                 
-                Text("+\(String(format: "%.1f", portfolio.change24h))%")
-                    .font(.system(size: 14))
-                    .foregroundColor(.green)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(Color.green.opacity(0.2))
-                    .cornerRadius(4)
+                Text("157342.05")
+                    .font(.system(size: 40, weight: .semibold))
+                    .foregroundColor(.white)
             }
+            .padding(.horizontal)
+            
+            HStack(spacing: 12) {
+                Text("₹1,342")
+                    .font(.system(size: 15))
+                    .foregroundColor(Color.cryptoGreen)
+                
+                Text("+9.6%")
+                    .font(.system(size: 15))
+                    .foregroundColor(Color.cryptoGreen)
+            }
+            .padding(.horizontal)
         }
-        .padding(.top, 20)
+    }
+}
+struct PortfolioHeaderView_Previews: PreviewProvider {
+    static var previews: some View {
+        PortfolioHeaderView(portfolio: Portfolio())
+            .padding()
+            .background(Color.black)
     }
 }
